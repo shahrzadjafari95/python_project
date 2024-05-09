@@ -39,3 +39,10 @@ def create_connector_cursor(path):
     return connector, cursor
 
 
+def create_table(connector, corsur):
+    query = "CREATE TABLE IF NOT EXISTS weather_information(city TEXT, temp REAL, humidity REAL, date TEXT, time TEXT,"\
+            "sunrise TEXT, sunset TEXT)"
+    corsur.execute(query)
+    connector.commit()
+
+
