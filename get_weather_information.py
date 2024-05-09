@@ -1,5 +1,8 @@
 import requests
 import datetime
+import sqlite3
+
+
 def get_weather_data():
     city = input('enter your city:')
     app_id = "88716c89a36e56e4398e8249f2ad0225"
@@ -18,6 +21,8 @@ def process_data(json_file):
     return f'city:{city}, temp:{celsius_temp}, city:{city}, humidity:{humidity}'
 
 
+# get time, sunset and sunrise from json, and convert to time with use datetime module,
+# because these times are timestamp format.
 def process_time(json_file):
     time = json_file['dt']
     date_time = datetime.datetime.fromtimestamp(time)
@@ -26,5 +31,11 @@ def process_time(json_file):
     sunset = json_file['sys']['sunset']
     sunset_time = datetime.datetime.fromtimestamp(sunset).time()
     return f'date: {date_time.date()}, time: {date_time.time()}, sunrise: {sunrise_time}, sunset: {sunset_time}'
+
+
+def create_connector_cursor(path):
+    connector = sqlite3.connect(path)
+    cursor = connector.cursor()
+    return connector, cursor
 
 
