@@ -18,7 +18,7 @@ def process_data(json_file):
     celsius_temp = round(temp - 273.15, 2)
     humidity = json_file['main']['humidity']
     city = json_file['name']
-    return f'city:{city}, temp:{celsius_temp}, city:{city}, humidity:{humidity}'
+    return f'city:{city}, temp:{celsius_temp}, humidity:{humidity}'
 
 
 # get time, sunset and sunrise from json, and convert to time with use datetime module,
