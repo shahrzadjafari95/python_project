@@ -1,10 +1,10 @@
+import time
 import requests
 import datetime
 import sqlite3
 
 
-def get_weather_data():
-    # city = input('enter your city:')
+def get_weather_data(city):
     app_id = "88716c89a36e56e4398e8249f2ad0225"
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city},&appid={app_id}'
     weather_url = requests.get(url)
@@ -52,3 +52,14 @@ def insert_into_database(connector, cursor, data):
     connector.commit()
 
 
+while True:
+    input_city = input('enter your city:')
+    if get_weather_data(input_city)['cod'] == 200:
+        city_data = process_data(get_weather_data(input_city)).split(',') + (process_time(get_weather_data(input_city)).split())
+        con, cur = create_connector_cursor('mydb.db')  # create object of connector and cursor
+        create_table(con, cur)
+        insert_into_database(con, cur, city_data)
+        break
+    else:
+        print('please enter the correct city')
+        continue
