@@ -4,7 +4,7 @@ import sqlite3
 
 
 def get_weather_data():
-    city = input('enter your city:')
+    # city = input('enter your city:')
     app_id = "88716c89a36e56e4398e8249f2ad0225"
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city},&appid={app_id}'
     weather_url = requests.get(url)
@@ -12,13 +12,13 @@ def get_weather_data():
     return response
 
 
-# show temp, humidity, city from json
+# get temp, humidity, city from json
 def process_data(json_file):
     temp = json_file['main']['temp']
     celsius_temp = round(temp - 273.15, 2)
     humidity = json_file['main']['humidity']
     city = json_file['name']
-    return f'city:{city}, temp:{celsius_temp}, humidity:{humidity}'
+    return f'{city},{celsius_temp},{humidity} '
 
 
 # get time, sunset and sunrise from json, and convert to time with use datetime module,
@@ -30,7 +30,7 @@ def process_time(json_file):
     sunrise_time = datetime.datetime.fromtimestamp(sunrise).time()
     sunset = json_file['sys']['sunset']
     sunset_time = datetime.datetime.fromtimestamp(sunset).time()
-    return f'date: {date_time.date()}, time: {date_time.time()}, sunrise: {sunrise_time}, sunset: {sunset_time}'
+    return f'{date_time.date()}, {date_time.time()}, {sunrise_time}, {sunset_time}'
 
 
 def create_connector_cursor(path):
@@ -39,10 +39,16 @@ def create_connector_cursor(path):
     return connector, cursor
 
 
-def create_table(connector, corsur):
+def create_table(connector, cursor):
     query = "CREATE TABLE IF NOT EXISTS weather_information(city TEXT, temp REAL, humidity REAL, date TEXT, time TEXT,"\
             "sunrise TEXT, sunset TEXT)"
-    corsur.execute(query)
+    cursor.execute(query)
+    connector.commit()
+
+
+def insert_into_database(connector, cursor, data):
+    query = "INSERT INTO weather_information(city, temp, humidity, date, time, sunrise, sunset) VALUES (?,?,?,?,?,?,?)"
+    cursor.execute(query, data)
     connector.commit()
 
 
