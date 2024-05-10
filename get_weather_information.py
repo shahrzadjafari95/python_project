@@ -55,7 +55,8 @@ def insert_into_database(connector, cursor, data):
 while True:
     input_city = input('enter your city:')
     if get_weather_data(input_city)['cod'] == 200:
-        city_data = process_data(get_weather_data(input_city)).split(',') + (process_time(get_weather_data(input_city)).split())
+        city_data = process_data(get_weather_data(input_city)).split(',') + \
+                    (process_time(get_weather_data(input_city)).split())
         con, cur = create_connector_cursor('mydb.db')  # create object of connector and cursor
         create_table(con, cur)
         insert_into_database(con, cur, city_data)
